@@ -3,12 +3,12 @@ import React, {PropTypes} from 'react'
 import TodoList from 'components/todos/TodoList'
 import LoadError from 'components/shared/LoadError'
 
-import {fetchTodos, toggleTodo} from 'actions/TodoActions';
-import {getVisibleTodos, getErrorMessage, getIsFetching} from 'reducers';
+import {fetchTodos, toggleTodo} from 'actions/TodoActions'
+import {getVisibleTodos, getErrorMessage, getIsFetching} from 'reducers'
 
 function loadData(props) {
   const {filter} = props
-  fetchTodos(filter);
+  fetchTodos(filter)
 }
 
 const VisibleTodoList = React.createClass({
@@ -43,10 +43,10 @@ const VisibleTodoList = React.createClass({
   },
 
   render() {
-    const {isFetching, errorMessage, todos} = this.state;
+    const {isFetching, errorMessage, todos} = this.state
 
     if (isFetching && !todos.length) {
-      return <p>Loading...</p>;
+      return <p>Loading...</p>
     }
 
     if (errorMessage && !todos.length) {
