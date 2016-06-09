@@ -5,30 +5,30 @@ import {withRouter} from 'react-router'
 import TodoList from 'components/todos/TodoList'
 import LoadError from 'components/shared/LoadError'
 
-import * as actions from 'actions';
-import {getVisibleTodos, getErrorMessage, getIsFetching} from 'reducers';
+import * as actions from 'actions'
+import {getVisibleTodos, getErrorMessage, getIsFetching} from 'reducers'
 
 function loadData(props) {
-  const {filter, fetchTodos} = props;
-  fetchTodos(filter);
+  const {filter, fetchTodos} = props
+  fetchTodos(filter)
 }
 
 class VisibleTodoList extends Component {
   componentDidMount() {
-    loadData(this.props);
+    loadData(this.props)
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.filter !== prevProps.filter) {
-      loadData(this.props);
+      loadData(this.props)
     }
   }
 
   render() {
-    const { isFetching, errorMessage, toggleTodo, todos } = this.props;
+    const { isFetching, errorMessage, toggleTodo, todos } = this.props
 
     if (isFetching && !todos.length) {
-      return <p>Loading...</p>;
+      return <p>Loading...</p>
     }
 
     if (errorMessage && !todos.length) {
