@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>after.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>after.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>This file demonstrates where we want to be after we migrate from
+<a href="https://facebook.github.io/flux/">flux</a> to
+<a href="redux.js.org">redux</a>. I’m annotating only what has changed from
+the “before” version.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Everything stays the same except we additionally import <code>Component</code>, <code>connect</code>
+and <code>withRouter</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> React, {Component, PropTypes} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>
+<span class="hljs-keyword">import</span> {connect} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-redux'</span>
+<span class="hljs-keyword">import</span> {withRouter} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-router'</span>
+
+<span class="hljs-keyword">import</span> TodoList <span class="hljs-keyword">from</span> <span class="hljs-string">'components/todos/TodoList'</span>
+<span class="hljs-keyword">import</span> LoadError <span class="hljs-keyword">from</span> <span class="hljs-string">'components/shared/LoadError'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>This is not exactly necessary or desired with bigger applications but
+we no longer use a separate action file, rather we import actions
+from <code>actions/index.js</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> actions <span class="hljs-keyword">from</span> <span class="hljs-string">'actions'</span>;
+<span class="hljs-keyword">import</span> {getVisibleTodos, getErrorMessage, getIsFetching} <span class="hljs-keyword">from</span> <span class="hljs-string">'reducers'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>This function is almost the same except we now use <code>fetchTodos</code>
+function from the <code>props</code>. The reason is that it’s better for testability
+of this component. We’ll come to that later.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadData</span>(<span class="hljs-params">props</span>) </span>{
+  <span class="hljs-keyword">const</span> {filter, fetchTodos} = props;
+  fetchTodos(filter);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>We use ES6 class components. This is also not necessary but there’s implication.
+We’ll come to it later.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VisibleTodoList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p><strong>Note</strong> how we no longer need <code>mixins</code> and <code>getStateFromFlux</code> here. Nice!
+If you wonder where <code>propTypes</code> is and why it has moved, read on.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+  componentDidMount() {
+    loadData(<span class="hljs-keyword">this</span>.props);
+  }
+
+  componentDidUpdate(prevProps) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.props.filter !== prevProps.filter) {
+      loadData(<span class="hljs-keyword">this</span>.props);
+    }
+  }
+
+  render() {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>We now get the data from <code>props</code> instead of <code>state</code>. One more noticeable
+change is that <code>toggleTodo</code> is also coming from the <code>props</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">const</span> { isFetching, errorMessage, toggleTodo, todos } = <span class="hljs-keyword">this</span>.props;
+
+    <span class="hljs-keyword">if</span> (isFetching &amp;&amp; !todos.length) {
+      <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>;
+    }
+
+    <span class="hljs-keyword">if</span> (errorMessage &amp;&amp; !todos.length) {
+      <span class="hljs-keyword">return</span> &lt;LoadError message={errorMessage} /&gt;
+    }
+
+    return (
+      &lt;TodoList todos={todos} onTodoClick={toggleTodo} /&gt;
+    )
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Now, we define <code>propTypes</code> here. This colocation next to the <code>mapStateToProps</code>
+function is good because we see what properties the component needs and thus
+we can inject these properties in the <code>mapStateToProps</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>VisibleTodoList.propTypes = {
+  filter: PropTypes.oneOf([<span class="hljs-string">'all'</span>, <span class="hljs-string">'active'</span>, <span class="hljs-string">'completed'</span>]).isRequired,
+  errorMessage: PropTypes.string,
+  todos: PropTypes.array.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  fetchTodos: PropTypes.func.isRequired,
+  toggleTodo: PropTypes.func.isRequired
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>This function is basically very similar to <code>getStateFromFlux</code> except
+the <code>state</code> is now injected as a function argument. Also router <code>params</code>
+property is passed in as an argument. Note that we’re also passing in
+the <code>filter</code> property. We no longer need parent to inject that property.
+Fantastic! Read on to find out where the <code>params</code> argument comes from.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> mapStateToProps = (state, {params}) =&gt; {
+  <span class="hljs-keyword">const</span> filter = params.filter || <span class="hljs-string">'all'</span>
+  <span class="hljs-keyword">return</span> {
+    isFetching: getIsFetching(state, filter),
+    errorMessage: getErrorMessage(state, filter),
+    todos: getVisibleTodos(state, filter),
+    filter,
+  }
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>The most important part is to put everything together. We first decorate
+<code>VisibleTodoList</code> with <code>connect()</code>. This generates a <code>Connect</code> component
+that listens to a single reducer store changes. It’s also pure meaning that
+it only re-renders when either its <code>props</code> or <code>state</code> has changed.</p>
+<p>If it did change, the component calls <code>mapStateToProps</code> and <code>mapDispatchToProps</code>
+and merges the two resulting objects together. This forms the <code>props</code> object that will be
+passed into the <code>VisibleTodoList</code> component itself.</p>
+<p>As the last step we decorate the generated <code>Connect</code> component with <code>withRouter()</code>.
+That injects a few router related props into the <code>Connect</code> component. All of these
+own <code>Connect</code> component properties are then available as the second argument of
+<code>mapStateToProps</code> and <code>mapDispatchToProps</code> functions respectively.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>VisibleTodoList = withRouter(connect(
+  mapStateToProps,
+  actions
+)(VisibleTodoList))
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> VisibleTodoList</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

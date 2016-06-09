@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>before.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>before.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>This file demonstrates how an intermediate step of
+<a href="https://facebook.github.io/flux/">flux</a> to
+<a href="redux.js.org">redux</a> migration might look like.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>At first we import 3rd party libraries.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> React, {PropTypes} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Followed by the child component imports.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> TodoList <span class="hljs-keyword">from</span> <span class="hljs-string">'components/todos/TodoList'</span>
+<span class="hljs-keyword">import</span> LoadError <span class="hljs-keyword">from</span> <span class="hljs-string">'components/shared/LoadError'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>And last but not least we need import all actions, reducers,
+selectors and possibly some utilities or helpers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">import</span> {fetchTodos, toggleTodo} <span class="hljs-keyword">from</span> <span class="hljs-string">'actions/TodoActions'</span>;
+<span class="hljs-keyword">import</span> {getVisibleTodos, getErrorMessage, getIsFetching} <span class="hljs-keyword">from</span> <span class="hljs-string">'reducers'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Before jumping straight at the component implementation we define
+how this component fetches the data it needs. We’re calling actions
+and passing in the input arguments.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">loadData</span>(<span class="hljs-params">props</span>) </span>{
+  <span class="hljs-keyword">const</span> {filter} = props
+  fetchTodos(filter);
+}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Our <a href="https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0">container</a> component definition.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> VisibleTodoList = React.createClass({</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Property <code>filter</code> is going to be passed in by the parent component which
+in most cases is a handler component also known as page component.
+Filter is a route property obtained from the route <code>/:filter</code>.
+We could access router through <code>this.context.router</code> and call <code>getCurrentParams().filter</code>
+to get the filter value but in that case we wouldn’t be able to receive
+new values when the route changes because we use <code>PureRenderMixin</code> (see below).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  propTypes: {
+    filter: PropTypes.oneOf([<span class="hljs-string">'all'</span>, <span class="hljs-string">'active'</span>, <span class="hljs-string">'completed'</span>]).isRequired
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>The component listens to <code>ReducerStore</code> changes. Also this component
+is <a href="https://facebook.github.io/react/docs/pure-render-mixin.html">pure</a>
+which means that it only calls <code>render</code> if either <code>props</code> or <code>state</code> has changed.
+That’s why we need <code>filter</code> be injected by the parent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  mixins: [
+    StoreWatchMixin(ReducerStore),
+    PureRenderMixin
+  ],</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>When the store changes state it emits the change event. As a result,
+change event handler registered by the <code>StoreWatchMixin</code>
+is triggered and sets the new state obtained by calling <code>getStateFromFlux</code>.
+This function does all the wiring of the store state to this component’s
+state.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  getStateFromFlux() {
+    <span class="hljs-keyword">const</span> state = ReducerStore.getState()
+    <span class="hljs-keyword">const</span> {filter} = <span class="hljs-keyword">this</span>.props
+
+    <span class="hljs-keyword">return</span> {
+      isFetching: getIsFetching(state, filter),
+      errorMessage: getErrorMessage(state, filter),
+      todos: getVisibleTodos(state, filter)
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Here we utilise the <code>loadData</code> function. Universal apps can make use of
+the <code>componentWillMount</code> hook which is called on the client
+AND the server whereas <code>*DidMount</code> is only called on the client.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  componentDidMount() {
+    loadData(<span class="hljs-keyword">this</span>.props)
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Here we re-load the data whenever any input that enters “the equation”
+has changed. In this case only <code>filter</code> matters.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  componentDidUpdate(prevProps) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.props.filter !== prevProps.filter) {
+      loadData(<span class="hljs-keyword">this</span>.props)
+    }
+  },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>At the end we need to render the component’s markup. We use <code>state</code>
+that was fetched from the store. We’re passing in the actions. That’s
+because <code>&lt;TodoList/&gt;</code> is purely presentational component that doesn’t
+do anything of what we do here. Just contains a <code>render</code> function
+and receives everything else as a property.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  render() {
+    <span class="hljs-keyword">const</span> {isFetching, errorMessage, todos} = <span class="hljs-keyword">this</span>.state;
+
+    <span class="hljs-keyword">if</span> (isFetching &amp;&amp; !todos.length) {
+      <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span>;
+    }
+
+    <span class="hljs-keyword">if</span> (errorMessage &amp;&amp; !todos.length) {
+      <span class="hljs-keyword">return</span> &lt;LoadError message={errorMessage} /&gt;
+    }
+
+    return (
+      &lt;TodoList todos={todos} onTodoClick={toggleTodo} /&gt;
+    )
+  }
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>And export the container component.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> VisibleTodoList</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

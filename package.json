@@ -1,0 +1,19 @@
+{
+  "name": "flux-to-redux",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "doc": "docco before.js && docco after.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mareksuscak/flux-to-redux.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://suscak.com/flux-to-redux/docs/before.html",
+  "devDependencies": {
+    "docco": "0.7.0"
+  }
+}
